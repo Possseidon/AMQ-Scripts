@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMQ Buzzer - Possseidon Edition
 // @namespace    https://github.com/Possseidon
-// @version      1.1.2
+// @version      1.1.3
 // @description  Mutes the song on the buzzer (Enter key on empty answer field) and displays time you buzzed in
 // @author       TheJoseph98
 // @match        https://animemusicquiz.com/*
