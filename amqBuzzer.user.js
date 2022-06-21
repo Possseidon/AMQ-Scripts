@@ -95,6 +95,8 @@ function setup() {
     });
 
     let quizAnswerResultsListener = new Listener("answer results", result => {
+        gameChat.systemMessage(`--- Song: ${parseInt($("#qpCurrentSongCount").text())}: ${result.songInfo.animeNames.romaji} ---`)
+
         // unmute only if the player muted the sound by buzzing and not by manually muting the song
         if (buzzed) {
             volumeController.muted = false;
