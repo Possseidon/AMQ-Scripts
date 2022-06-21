@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         AMQ Buzzer
-// @namespace    https://github.com/TheJoseph98
+// @name         AMQ Buzzer - Possseidon Edition
+// @namespace    https://github.com/Possseidon
 // @version      1.1.2
 // @description  Mutes the song on the buzzer (Enter key on empty answer field) and displays time you buzzed in
 // @author       TheJoseph98
 // @match        https://animemusicquiz.com/*
 // @grant        none
-// @require      https://raw.githubusercontent.com/TheJoseph98/AMQ-Scripts/master/common/amqScriptInfo.js
-// @updateURL    https://github.com/TheJoseph98/AMQ-Scripts/raw/master/amqBuzzer.user.js
+// @require      https://raw.githubusercontent.com/Possseidon/AMQ-Scripts/master/common/amqScriptInfo.js
+// @updateURL    https://github.com/Possseidon/AMQ-Scripts/raw/master/amqBuzzer.user.js
 // ==/UserScript==
 
 // don't load on login page
@@ -29,7 +29,13 @@ let buzzed = false;
 let answerHandler;
 
 function showBuzzMessage(buzzTime) {
-    gameChat.systemMessage(`Song ${parseInt($("#qpCurrentSongCount").text())}, buzz: ${buzzTime}`);
+    const message = `Song ${parseInt($("#qpCurrentSongCount").text())}, buzz: ${buzzTime}`;
+    gameChat.systemMessage(message);
+
+    const oldMessage = gameChat.$chatInputField.val();
+    gameChat.$chatInputField.val(message);
+    gameChat.sendMessage();
+    gameChat.$chatInputField.val(oldMessage);
 }
 
 function formatTime(time) {
