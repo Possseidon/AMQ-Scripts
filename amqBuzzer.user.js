@@ -28,14 +28,30 @@ let buzzed = false;
 
 let answerHandler;
 
-function showBuzzMessage(buzzTime) {
-    const message = `Song ${parseInt($("#qpCurrentSongCount").text())}, buzz: ${buzzTime}`;
-    gameChat.systemMessage(message);
+let oldWidth = $("#qpOptionContainer").width();
+$("#qpOptionContainer").width(oldWidth + 35);
+$("#qpOptionContainer > div")
+    .append($(`<div id="qpBuzzer" class="clickAble qpOption"><i id="qpBuzzerIcon" aria-hidden="true" class="fa fa-bell-slash qpMenuItem"></i></div>`)
+        .click(() => {
+            $("#qpBuzzer i").toggleClass("fa-bell-slash");
+            $("#qpBuzzer i").toggleClass("fa-bell");
+        })
+        .popover({
+            content: "Announce Buzzer to Chat",
+            trigger: "hover",
+            placement: "bottom"
+        })
+    );
 
-    const oldMessage = gameChat.$chatInputField.val();
-    gameChat.$chatInputField.val(message);
-    gameChat.sendMessage();
-    gameChat.$chatInputField.val(oldMessage);
+function sendBuzzerMessage(buzzTime) {
+    if ($("#qpBuzzerIcon").hasClass("fa-bell")) {
+        const oldMessage = gameChat.$chatInputField.val();
+        gameChat.$chatInputField.val(`Hit the buzzer after ${buzzTime}`);
+        gameChat.sendMessage();
+        gameChat.$chatInputField.val(oldMessage);
+    } else {
+        gameChat.systemMessage(`You hit the buzzer after ${buzzTime}`);
+    }
 }
 
 function formatTime(time) {
@@ -79,11 +95,6 @@ function setup() {
     });
 
     let quizAnswerResultsListener = new Listener("answer results", result => {
-        // show the buzz message only if the player is playing the game (ie. is not spectating)
-        isPlayer = Object.values(quiz.players).some(player => player.isSelf === true);
-        if (!buzzed && isPlayer) {
-            showBuzzMessage("N/A");
-        }
         // unmute only if the player muted the sound by buzzing and not by manually muting the song
         if (buzzed) {
             volumeController.muted = false;
@@ -100,7 +111,7 @@ function setup() {
                 buzzerTime = Date.now();
                 volumeController.muted = true;
                 volumeController.adjustVolume();
-                showBuzzMessage(formatTime(buzzerTime - songStartTime));
+                sendBuzzerMessage(formatTime(buzzerTime - songStartTime))
             }
         }
     }
@@ -118,4 +129,11 @@ function setup() {
             <p>The timer starts when the guess phase begins (NOT when you get sound)</p>
         `
     });
+
+    AMQ_addStyle(`
+        #qpBuzzer {
+            width: 30px;
+            margin-right: 5px;
+        }
+    `);
 }
